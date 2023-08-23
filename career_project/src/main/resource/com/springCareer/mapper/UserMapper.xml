@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.springCareer.mapper.UserMapper">
+	<select id="getUserList" resultType="com.springCareer.domain.UserVO">
+		<![CDATA[
+			SELECT userid, userpassword, username, useremail, usernickname, useraddress, userphone, usercreatedat FROM users
+			WHERE userid > 0
+		]]>
+	</select>
+	
+	<select id="readUser" resultType="com.springCareer.domain.UserVO">
+		SELECT userid, userpassword, username, useremail, usernickname, useraddress, userphone, usercreatedat FROM users
+		WHERE userid = #{userId}
+	</select>
+
+	<select id="checkUserId">
+		SELECT userid FROM users
+		WHERE userid = #{userId}
+	</select>
+	
+	<select id="loginUser" resultType="com.springCareer.domain.UserVO">
+		SELECT userid, userpassword, username, useremail, usernickname, useraddress, userphone, usercreatedat FROM users
+		WHERE userid = #{userId}
+			AND userPassword = #{userPassword}
+	</select>
+
+	<insert id="insertUser">
+		INSERT INTO users(userid, userpassword, username, useremail, usernickname, useraddress, userphone, usercreatedat)
+		VALUES(
+			#{userId},
+			#{userPassword},
+			#{userName},
+			#{userEmail},
+			#{userNickname},
+			#{userAddress},
+			#{userPhone},
+			sysdate
+		)
+	</insert>
+
+	<update id="updateUser">
+		UPDATE users
+		SET userid = #{userId},
+			userpassword = #{userPassword},
+			username = #{userName},
+			useremail = #{userEmail},
+			usernickname = #{userNickname},
+			useraddress = #{userAddress},
+			userphone = #{userPhone}
+		WHERE userid = #{userId}
+	</update>
+
+	<delete id="deleteUser">
+		DELETE FROM users
+		WHERE userid = #{userId} AND userpassword = #{userPassword}
+	</delete>
+
+</mapper>

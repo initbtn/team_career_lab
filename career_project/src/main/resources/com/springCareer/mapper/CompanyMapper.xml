@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springCareer.mapper.CompanyMapper">
+	<!-- <resultMap id="crbMap" type="com.springCareer.domain.CareerBoardVO">
+	  <result property="crbId" column="crb_id" />
+      <result property="userId" column="userid" />
+      <result property="prIntro" column="pr_intro" />
+      <result property="prPic" column="pr_pic" />
+      <result property="createAt" column="create_at" />
+      <collection property="userList" resultMap="UserMap"></collection>
+ 	</resultMap> -->
+
+	<select id="getById" resultType="com.springCareer.company.CompanyAdmin">
+	<![CDATA[	
+		select * from company_admin where userid= #{userid}
+	]]> 
+	</select>	
+
+	<select id="login" resultType="com.springCareer.company.CompanyAdmin">
+	<![CDATA[	
+		select userid,name,grade from company_admin where userid = #{userid} and password = #{password}
+	]]> 
+	</select>	
+
+	<select id="getList" resultType="com.springCareer.company.CompanyAdmin">
+	<![CDATA[	
+		select * from company_admin where userid>0
+	]]> 
+	</select>
+	
+	
+	<insert id="insert">
+		insert into
+					company_admin (userid, password, name, belong, phone, grade, created_at)
+		values
+					(#{userid}, #{password}, #{name}, #{belong}, #{phone}, 'super', sysdate)
+	</insert>
+	
+	<select id="read" resultType="com.springCareer.company.CompanyAdmin">
+		select * from company_admin where userid= #{userid}
+	</select>
+	
+	<delete id="delete">
+		delete company where userid= #{userid}
+	</delete>
+	
+	<update id="update">
+		update
+				company_admin
+		set
+				userid= #{userid}, password=#{password}, name=#{name}, belong=#{belong}, phone=#{phone}
+		where
+				userid= #{userid}
+	</update> 
+</mapper>

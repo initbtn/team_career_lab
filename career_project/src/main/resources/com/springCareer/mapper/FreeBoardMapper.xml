@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.springCareer.mapper.FreeBoardMapper">
+	<select id="getList" resultType="com.springCareer.domain.FreeBoardVO">
+	<![CDATA[	
+		select * from free_post where post_id>0
+	]]> 
+	</select>
+	
+	<select id="getPostId" resultType="Long">
+		SELECT post_id FROM free_post WHERE userid = #{userId}
+	</select>
+	
+	
+	<insert id="insert">
+		insert into
+			free_post(post_id, userId, title, content, created_at)
+		values
+			(seq_freeboard.nextval, #{userId}, #{title}, #{content}, sysdate)
+	</insert>	
+	
+	
+	<select id="read" resultType="com.springCareer.domain.FreeBoardVO">
+		select * from free_post where post_id = #{post_id}
+	</select>
+	
+	<update id="update">
+		update
+			free_post
+		set
+			title=#{title}, content=#{content}, created_at=sysdate
+		where
+			post_id = #{post_id}
+	</update>
+	 
+ 	
+	<delete id="delete">
+		delete free_post where post_id = #{post_id}
+	</delete>
+	
+	
+		
+	<select id="getListWithPaging" resultType="com.springCareer.domain.FreeBoardVO">
+	<![CDATA[
+			select
+				post_id, userId, title, content, hit, created_at
+			from(
+				select
+					/*+INDEX_DESC(free_post pk_board) */
+					rownum rn, post_id, userId, title, content, hit, created_at
+				from
+					free_post
+				where
+					rownum <= #{pageNum} * #{amount}
+				)
+			where
+				rn > (#{pageNum}-1) * #{amount}
+	]]>
+	</select>
+	
+ 	<update id="hit">
+		update
+			free_post
+		set 
+			hit = #{hit}
+		where
+			post_id = #{post_id}
+	</update> 
+	
+<!--
+	this(1=pageNum, 10=amount)으로 설정,
+	from절안의 select구문 ->  free_post에 rownum rn, post_id, userId, title, content, created_at부분을 선택하는 조건 ==>1~10번까지의 게시글을 select하는 구문
+	
+	rn > (#{pageNum}-1) * #{amount} -> 1페이지의 경우, (rn>0)이 되어 10개의 게시글을 출력
+	2페이지의 경우 rn>10이 되어서 11번~20번까지의 게시글이 출력
+-->
+ 
+ </mapper>

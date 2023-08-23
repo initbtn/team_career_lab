@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.springCareer.mapper.FreeLikeMapper">
+	<select id="getList" resultType="com.springCareer.domain.FreeBoardLikeVO">
+	<![CDATA[	
+		select * from free_like where like_id>0 and post_id = ${#post_id}
+	]]> 
+	</select>
+	
+	<!-- 게시글에 좋아요 갯수-->
+	<select id="likeCount" resultType="int">
+		select 
+			count(*)
+		from 
+			free_like 
+		where 
+			post_id = #{post_id}
+	</select>
+	
+	<insert id="likeUp">
+		insert into free_like
+			(like_id ,post_id , userId, created_at)
+		values
+			(seq_freeboardlike.nextval, #{post_id}, #{userId}, sysdate)
+	</insert>
+	
+	
+ 	<delete id="likeDown">
+	  	delete from
+	  		free_like 
+	  	where
+	  		post_id = #{post_id}
+	  		and
+	  		userId = #{userId} 
+	 </delete>
+
+	<delete id="delete">
+		DELETE FROM free_like
+		WHERE
+			post_id = #{post_id}
+	</delete>
+	  
+	<!-- 좋아요 눌럿는지 안눌럿는지 -->
+	<select id="findLike" resultType="int">
+		select count(*) from free_like where post_id = #{post_id} and userId = #{userId}
+	</select>
+	
+
+ </mapper>
