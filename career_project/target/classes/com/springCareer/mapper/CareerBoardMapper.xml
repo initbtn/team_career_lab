@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.springCareer.mapper.CareerBoardMapper">
+	<resultMap id="crbMap" type="com.springCareer.domain.CareerBoardVO">
+		<result property="crbId" column="crb_id" />
+		<result property="userId" column="userid" />
+		<result property="prIntro" column="pr_intro" />
+		<result property="prPic" column="pr_pic" />
+		<result property="createAt" column="create_at" />
+		<collection property="userList" resultMap="UserMap"></collection>
+	</resultMap>
+	
+	<resultMap id="UserMap" type="com.springCareer.domain.UserVO">
+		<result property="userId" column="userid"/>
+		<result property="userPassword" column="userpassword"/>
+		<result property="userName" column="username"/>
+		<result property="userEmail" column="useremail"/>
+		<result property="userNickname" column="usernickname"/>
+		<result property="userAddress" column="useraddress"/>
+		<result property="userPhone" column="userphone"/>
+		<result property="userCreatedAt" column="usercreatedat"/>
+	</resultMap>
+	
+	<resultMap id="readsMap" type="com.springCareer.domain.CareerBoardVO">
+		<result property="crbId" column="crb_id" />
+		<result property="userId" column="userid" />
+		<result property="prIntro" column="pr_intro" />
+		<result property="prPic" column="pr_pic" />
+		<result property="createAt" column="create_at" />
+	</resultMap>
+
+
+	<select id="getCareerList" resultMap="readsMap">
+		<![CDATA[
+			SELECT crb_id, userid, pr_intro, pr_pic, create_at FROM careerboard
+			WHERE crb_id > 0
+		]]>
+	</select>
+	
+	<select id="getMyBoard" resultType="com.springCareer.domain.FreeBoardVO">
+	<![CDATA[	
+		select * from free_post where userid = #{userId} AND ROWNUM <= 6
+	]]> 
+	</select>
+	
+	<select id="readCareerList" resultMap="crbMap">
+	<![CDATA[
+		SELECT c.crb_id, c.userid, pr_intro, pr_pic, create_at, u.usernickname FROM careerboard c
+		INNER JOIN users u
+		ON u.userid = c.userid
+		WHERE c.userid = #{userid}
+		AND rownum <= 6
+		ORDER BY c.create_at DESC
+	]]>
+	</select>
+	
+	<select id="readCareer" resultMap="crbMap">
+		SELECT c.crb_id, c.userid, pr_intro, pr_pic, create_at, u.username, u.useremail, u.usernickname, u.useraddress, u.userphone, u.usercreatedat 
+		FROM (SELECT * FROM careerboard
+				ORDER BY create_at DESC) c
+		INNER JOIN users u
+		ON u.userid = c.userid
+		WHERE c.userid = #{userId}
+		AND ROWNUM = 1
+		
+	</select>
+	
+	<insert id="insertCareer">
+		INSERT INTO careerboard(crb_id, userid, pr_intro, create_at)
+		VALUES (careerboard_seq.nextval, #{userId}, #{prIntro}, sysdate)
+	</insert>
+	
+	<update id="updateCareer">
+		UPDATE careerboard
+		SET userid = #{userId},
+			pr_intro = #{prIntro},
+			pr_pic = #{prPic},
+			create_at = sysdate
+		WHERE userid = #{userId}
+		AND crb_id = #{crbId}
+	</update>
+	
+	<delete id="deleteCareer">
+		DELETE FROM careerboard
+		WHERE crb_id = #{crbId}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.springCareer.mapper.FollowMapper">
+	<resultMap id="follow" type="com.springCareer.domain.FollowVO">
+		<result property="followId" column="follow_id" />
+		<result property="following" column="following" />
+		<result property="follower" column="follower" />
+		<collection property="followers" resultMap="List"></collection>
+	</resultMap>
+	<resultMap id="List" type="com.springCareer.domain.FollowVO">
+		<result property="followId" column="follow_id" />
+		<result property="following" column="following" />
+		<result property="follower" column="follower" />
+	</resultMap>
+	<select id="getFollowers" resultMap="follow">
+		<![CDATA[
+			SELECT * FROM follow
+			WHERE following = #{userId}
+		]]>
+	</select>
+	
+	<select id="following" resultMap="follow">
+		<![CDATA[
+			SELECT * FROM follow
+			WHERE following = #{following}
+			AND follower = #{follower}
+			AND ROWNUM = 1
+		]]>
+	</select>
+	
+	<select id="follower" resultMap="follow">
+		<![CDATA[
+			SELECT * FROM follow
+			WHERE following = #{following}
+			AND follower = #{follower}
+			AND ROWNUM = 1
+		]]>
+	</select>
+	
+	<select id="getFollowings" resultMap="follow">
+		<![CDATA[
+			SELECT * FROM follow
+			WHERE follower = #{userId}
+		]]>
+	</select>
+	
+	<select id="getFollower" resultType="int">
+		SELECT COUNT(*) FROM follow
+		WHERE following = #{userId}
+	</select>
+
+	<select id="getFollowing" resultType="int">
+		SELECT COUNT(*) FROM follow
+		WHERE follower = #{userId}
+	</select>
+
+	<insert id="follow">
+		INSERT INTO follow
+		VALUES(
+			follow_seq.nextval,
+			#{following},
+			#{follower}
+		)
+	</insert>
+
+	<delete id="unfollow">
+		DELETE FROM follow
+		WHERE following = #{following}
+		AND follower = #{follower}
+	</delete>
+	
+	<delete id="deleteFollow">
+		DELETE FROM follow
+		WHERE following = #{following}
+		OR follower = #{follower}
+	</delete>
+
+</mapper>

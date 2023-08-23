@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.springCareer.mapper.FreeReplyMapper">
+	<select id="getList" resultType="com.springCareer.domain.FreeBoardReplyVO">
+	<![CDATA[	
+		select * from free_comment where comment_id>0 and post_id=#{post_id}
+	]]> 
+	</select>
+	
+	
+	<insert id="insert"> <!-- C -->
+		insert into
+			free_comment(comment_id, post_id, userId, content, created_at)
+		values
+			(seq_freeboardreply.nextval, #{post_id}, #{userId}, #{content}, sysdate)
+	</insert>	
+	
+	
+	<select id="read" resultType="com.springCareer.domain.FreeBoardReplyVO"> <!-- R(한개) -->
+		select
+			* 
+		from 
+			free_comment
+		where 
+			post_id = #{post_id} and comment_id = #{comment_id}
+	</select>	
+	
+	<update id="update"> <!-- U -->
+		update
+			free_comment
+		set
+			content=#{content}
+		where
+			comment_id = #{comment_id}
+	</update>
+	 
+ 	
+	<delete id="delete"> <!-- D -->
+		delete free_comment where comment_id = #{comment_id} 
+	</delete>
+	
+	<delete id="deleteReply"> <!-- D -->
+		delete free_comment where post_id = #{post_id} 
+	</delete>
+	
+	<!-- 단일 댓글 조회 -->
+	<select id="replySelect" resultType="com.springCareer.domain.FreeBoardReplyVO">
+		select
+			*
+		from 
+			free_comment
+		where
+			post_id = #{post_id}
+		and 
+			comment_id = #{comment_id}					
+	</select>
+
+	
+<!-- 	<select id="getListWithPaging" resultType="com.springCareer.domain.FreeBoardReplyVO">
+		select
+			comment_id, post_id, userId, content, created_at
+		from
+			free_comment
+		where
+			post_id=#{post_id}
+		order by
+			comment_id
+	</select> -->
+ 
+ </mapper>
